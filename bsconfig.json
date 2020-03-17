@@ -1,0 +1,31 @@
+{
+  "name": "reason-eth",
+  "version": "0.0.1",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "example",
+      "subdirs": true
+    }
+  ],
+  "package-specs": {
+    "module": "es6",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "bs-dependencies": [
+    "reason-promise",
+    "reason-react",
+    "bs-webapi"
+  ],
+  "reason": {
+    "react-jsx": 3
+  },
+  "warnings": {
+    "error": "+101"
+  },
+  "refmt": 3
+}

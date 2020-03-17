@@ -1,0 +1,33 @@
+{
+  "name": "reason-eth",
+  "version": "0.0.1",
+  "scripts": {
+    "clean": "bsb -clean-world",
+    "build": "bsb -make-world",
+    "watch": "bsb -make-world -w"
+  },
+  "keywords": [
+    "BuckleScript"
+  ],
+  "author": "Brad Decker <bhdecker84@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "bs-platform": "^7.2.2"
+  },
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "bs-webapi": "^0.15.9",
+    "reason-promise": "^1.0.2",
+    "reason-react": "^0.7.0"
+  },
+  "workspaces": {
+    "packages": [
+      "src",
+      "example"
+    ],
+    "nohoist": [
+      "bs-platform"
+    ]
+  }
+}
