@@ -5,26 +5,44 @@ type status =
 type t = {
   status,
   chain: Chain.t,
-  enable: unit => Promise.t(result(array(string), Js.Exn.t)),
   isMetaMask: bool,
 };
 
-let make = () => {
-  switch (EthJS.make()) {
-  | Some(eth) => {
-      chain: eth.chainId->Chain.fromId,
-      enable: () => {
-        eth.enable()->Promise.Js.toResult;
-      },
-      isMetaMask: eth.isMetaMask,
-      status: Connected,
-    }
-
-  | None => {
-      enable: () => Promise.resolved(Ok([||])),
-      status: Disconnected,
-      isMetaMask: false,
-      chain: NotConnected,
-    }
-  };
+type ethjs = {
+  isMetaMask: bool,
+  chainId: string,
+  enable: unit => Promise.Js.t(array(string), Js.Exn.t),
 };
+
+[@bs.val] external window: _ = "window";
+let isBrowser = Js.typeof(window) != "undefined";
+
+[@bs.get] [@bs.return nullable]
+external ethereum: Dom.window => option(ethjs) = "ethereum";
+
+let defaultState = {
+  status: Disconnected,
+  isMetaMask: false,
+  chain: NotConnected,
+};
+
+let assertEnv = () =>
+  if (!isBrowser || Belt.Option.isNone(ethereum(Webapi.Dom.window))) {
+    Error.raiseJsExn(NotConnectedToProvider);
+  } else {
+    ();
+  };
+
+let make = () =>
+  if (!isBrowser) {
+    defaultState;
+  } else {
+    switch (ethereum(Webapi.Dom.window)) {
+    | Some(eth) => {
+        chain: eth.chainId->Chain.fromId,
+        isMetaMask: eth.isMetaMask,
+        status: Connected,
+      }
+    | None => defaultState
+    };
+  };

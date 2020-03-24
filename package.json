@@ -17,6 +17,7 @@
   "main": "index.js",
   "private": true,
   "dependencies": {
+    "bs-bn.js": "^0.0.2",
     "bs-webapi": "^0.15.9",
     "reason-promise": "^1.0.2",
     "reason-react": "^0.7.0"

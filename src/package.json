@@ -2,5 +2,12 @@
   "name": "reason-eth",
   "version": "0.0.1",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "bignumber.js": "^9.0.0",
+    "bn.js": "^5.1.1",
+    "ethjs-unit": "^0.1.6",
+    "number-to-bn": "^1.7.0",
+    "utf8": "^3.0.0"
+  }
 }

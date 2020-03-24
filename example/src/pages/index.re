@@ -2,12 +2,12 @@
 
 [@react.component]
 let default = () => {
-  let eth = Eth.make();
-  switch (eth.status) {
-  | Connected =>
-    Methods.gasPrice()->Promise.tapOk(v => Js.Console.log(v));
-    ();
-  | Disconnected => Js.Console.log(eth.chain->Chain.toId)
-  };
-  <div> "hello"->React.string </div>;
+  let accounts = Hooks.useAccounts();
+  <div>
+    {switch (accounts) {
+     | Resolved(accts) => <AccountBalance account={Array.get(accts, 0)} />
+     | Rejected(err) => err->Error.toString->React.string
+     | Pending => "Waiting"->React.string
+     }}
+  </div>;
 };
