@@ -1,1 +1,0 @@
-[@bs.val] external parseInt: (string, int) => int = "parseInt";

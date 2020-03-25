@@ -24,17 +24,16 @@ let usePromise = (promise: Promise.t(result('a, 'e))) => {
 };
 
 let useEthPromise = (fn: unit => Promise.t(result('a, 'e))) => {
-  let eth = Eth.make();
   let p =
-    React.useMemo2(
+    React.useMemo1(
       () => {
-        switch (eth.status) {
+        switch (Eth.getStatus()) {
         | Connected => fn()
         | Disconnected =>
-          Promise.resolved(Error(Error.NotConnectedToProvider))
+          Promise.resolved(Error(Eth_Error.NotConnectedToProvider))
         }
       },
-      (fn, eth.status),
+      [|fn|],
     );
   usePromise(p);
 };

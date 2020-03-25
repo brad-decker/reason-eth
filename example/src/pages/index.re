@@ -2,6 +2,7 @@
 
 [@react.component]
 let default = () => {
+  Js.log(Eth.getChain());
   let accounts = Hooks.useAccounts();
   <div>
     {switch (accounts) {

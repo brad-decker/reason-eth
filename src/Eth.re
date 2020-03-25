@@ -3,46 +3,51 @@ type status =
   | Connected;
 
 type t = {
-  status,
-  chain: Chain.t,
-  isMetaMask: bool,
-};
-
-type ethjs = {
   isMetaMask: bool,
   chainId: string,
   enable: unit => Promise.Js.t(array(string), Js.Exn.t),
 };
 
-[@bs.val] external window: _ = "window";
-let isBrowser = Js.typeof(window) != "undefined";
-
 [@bs.get] [@bs.return nullable]
-external ethereum: Dom.window => option(ethjs) = "ethereum";
+external ethereum: Dom.window => option(t) = "ethereum";
 
-let defaultState = {
-  status: Disconnected,
-  isMetaMask: false,
-  chain: NotConnected,
+// let assertEnv = () =>
+//   if (!isBrowser || Belt.Option.isNone(ethereum(Webapi.Dom.window))) {
+//     Error.raiseJsExn(NotConnectedToProvider);
+//   } else {
+//     ();
+//   };
+
+let call =
+    (thunk: unit => Promise.t(result('a, Eth_Error.t)))
+    : Promise.t(result('a, Eth_Error.t)) => {
+  switch (ethereum(Webapi.Dom.window)) {
+  | exception _ => Promise.resolved(Error(Eth_Error.NotConnectedToProvider))
+  | None => Promise.resolved(Error(Eth_Error.NotConnectedToProvider))
+  | Some(_) => thunk()
+  };
 };
 
-let assertEnv = () =>
-  if (!isBrowser || Belt.Option.isNone(ethereum(Webapi.Dom.window))) {
-    Error.raiseJsExn(NotConnectedToProvider);
-  } else {
-    ();
+let getChain = (): Chain.t => {
+  switch (ethereum(Webapi.Dom.window)) {
+  | exception _ => NotConnected
+  | None => NotConnected
+  | Some(eth) => eth.chainId->Chain.fromId
   };
+};
 
-let make = () =>
-  if (!isBrowser) {
-    defaultState;
-  } else {
-    switch (ethereum(Webapi.Dom.window)) {
-    | Some(eth) => {
-        chain: eth.chainId->Chain.fromId,
-        isMetaMask: eth.isMetaMask,
-        status: Connected,
-      }
-    | None => defaultState
-    };
+let isMetaMask = () => {
+  switch (ethereum(Webapi.Dom.window)) {
+  | exception _ => false
+  | None => false
+  | Some(eth) => eth.isMetaMask
   };
+};
+
+let getStatus = () => {
+  switch (ethereum(Webapi.Dom.window)) {
+  | exception _ => Disconnected
+  | None => Disconnected
+  | Some(_) => Connected
+  };
+};

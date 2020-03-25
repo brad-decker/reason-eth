@@ -44,7 +44,8 @@ module Data = {
 
   let extractCleanString = data => {
     switch (data) {
-    | `PlainText(str) => Utf8.encode(str)->removePadding(utf8padding)
+    | `PlainText(str) =>
+      External.Utf8.encode(str)->removePadding(utf8padding)
     | `HexString(str) =>
       str->Js.String2.replace("0x", "")->removePadding(hexpadding)
     };
@@ -52,13 +53,14 @@ module Data = {
 
   let prepareData = data =>
     switch (data) {
-    | `PlainText(str) => Utf8.encode(str)->removePadding(utf8padding)
+    | `PlainText(str) =>
+      External.Utf8.encode(str)->removePadding(utf8padding)
     | `HexString(str) =>
       str->Js.String2.replace("0x", "")->removePadding(hexpadding)
     };
 
   let hexCharToStr = hex => {
-    let it = Basic.parseInt(hex, 16);
+    let it = External.parseInt(hex, 16);
     let code = it->Js.String2.fromCharCode;
     code;
   };
@@ -97,7 +99,7 @@ module Data = {
   };
 
   let decode = (input: [ | `HexString(string)]) => {
-    plainText(input->prepareData->reverseHex->Utf8.decode);
+    plainText(input->prepareData->reverseHex->External.Utf8.decode);
   };
 
   let getString = t => {
