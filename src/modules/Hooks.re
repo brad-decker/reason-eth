@@ -23,14 +23,14 @@ let usePromise = (promise: Promise.t(result('a, 'e))) => {
   state;
 };
 
-let useEthPromise = (fn: unit => Promise.t(result('a, 'e))) => {
+let useEthPromise = (fn: unit => JsonRPC.response('a)) => {
   let p =
     React.useMemo1(
       () => {
         switch (Eth.getStatus()) {
         | Connected => fn()
         | Disconnected =>
-          Promise.resolved(Error(Eth_Error.NotConnectedToProvider))
+          Promise.resolved(Error(JsonRPC.NotConnectedToProvider))
         }
       },
       [|fn|],

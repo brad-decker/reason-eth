@@ -11,13 +11,6 @@ type t = {
 [@bs.get] [@bs.return nullable]
 external ethereum: Dom.window => option(t) = "ethereum";
 
-// let assertEnv = () =>
-//   if (!isBrowser || Belt.Option.isNone(ethereum(Webapi.Dom.window))) {
-//     Error.raiseJsExn(NotConnectedToProvider);
-//   } else {
-//     ();
-//   };
-
 let call =
     (thunk: unit => Promise.t(result('a, Eth_Error.t)))
     : Promise.t(result('a, Eth_Error.t)) => {
